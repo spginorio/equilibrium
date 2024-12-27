@@ -6,7 +6,8 @@ import 'package:time_it/screens/home_screen.dart';
 import 'package:time_it/screens/splash_screen.dart';
 
 class SignUpController extends GetxController {
-  // Making session and user observable
+  //
+  //! Making session and user observable
   Rxn<Session> session = Rxn<Session>();
   Rxn<User> user = Rxn<User>();
 
@@ -31,15 +32,43 @@ class SignUpController extends GetxController {
       if (user.value != null) {
         Get.offAll(() => HomeScreen()); // Navigate and remove previous routes
       }
-    } catch (e) {
+      //
+      //! catch any exceptions that occur during the sign up process
+      //! show a snackbar only the with the error message
+    } on AuthException catch (e) {
+      Get.snackbar(
+        "Sign Up Error",
+        e.message,
+        snackPosition: SnackPosition.BOTTOM,
+        isDismissible: true,
+      );
+
+      // Log the error for debugging purposes
       log("Error signing up: $e");
     }
   }
 
-  //!SIGNOUT
+  //! clear the controllers
+  void clearTextFields() {
+    emailController.value.clear();
+    passwordController.value.clear();
+  }
+
+  //!  -------------SIGNOUT-------------
   Future<void> signOut() async {
+    //sign out from Supabase and clear the session and user observables
     await supabase.auth.signOut();
-    Get.offAll(() => SplashPage());
+
+    //makes user null
+    user.value = null;
+
+    //clear the controllers of email and password
+    clearTextFields();
+
+    //navigate back to the splash screen if user is signed out
+    if (user.value == null) {
+      Get.offAll(() => SplashPage());
+    }
   }
 
   @override

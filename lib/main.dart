@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:time_it/screens/home_screen.dart';
 import 'package:time_it/screens/splash_screen.dart';
 import 'package:time_it/services/signup_service.dart';
+import 'package:time_it/services/signin_service.dart';
 
 void main() async {
   // initialize widget
@@ -21,6 +22,9 @@ void main() async {
 
 //singleton instance of the SignUpController
   Get.put(SignUpController());
+
+//singleton instance SingInControler
+  Get.put(SignInController());
 }
 
 class MainApp extends StatelessWidget {

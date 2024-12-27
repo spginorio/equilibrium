@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:time_it/services/signup_service.dart';
+import 'package:time_it/services/signin_service.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -12,7 +13,8 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   //
   //! retreive the signup controller
-  final controller = Get.find<SignUpController>();
+  final signUnController = Get.find<SignUpController>();
+  final signInController = Get.find<SignInController>();
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +39,50 @@ class _SplashPageState extends State<SplashPage> {
 
               //! SIGNIN
               TextButton(
-                onPressed: null,
+                onPressed: () => Get.bottomSheet(
+                    SingleChildScrollView(
+                      child: Container(
+                        height: 300,
+                        color: Colors.amber,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            //!EMAIL
+                            GetX<SignInController>(
+                              builder: (controller) => TextField(
+                                controller:
+                                    controller.emailSignInController.value,
+                              ),
+                            ),
+
+                            //!PASSWORD,
+                            GetX<SignInController>(
+                              builder: (controller) => TextField(
+                                controller:
+                                    controller.passwordSignInController.value,
+                              ),
+                            ),
+                            //!SIGN IN BUTTON,
+                            TextButton(
+                              onPressed: () async {
+                                await signInController.signInUser();
+                              },
+                              child: Text("Sing In"),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    isScrollControlled:
+                        true), //TODO: complete this bottomSheet signIn
                 child: Text("SIGN IN"),
               ),
 
               //! SIGNUP
               signUpModalBottomSheet(context),
 
-              //! SIGNUP WITH
+              //! SIGNUP WITH,
+              //TODO
             ],
           ),
         ],
@@ -116,19 +154,12 @@ class _SplashPageState extends State<SplashPage> {
                         */
                         TextButton(
                             onPressed: () async {
-                              await controller.signUpUser();
-                              if (controller.user.value != null) {
+                              await signUnController.signUpUser();
+                              if (signUnController.user.value != null) {
                                 // Check if signup was successful
                                 FocusScope.of(context).unfocus();
                                 // Close the bottom sheet first
                                 // Use Get.off instead of Get.to to prevent going back
-                              } else {
-                                // Show error message
-                                Get.snackbar(
-                                  'Error',
-                                  'Signup failed. Please try again.',
-                                  snackPosition: SnackPosition.BOTTOM,
-                                );
                               }
                             },
                             child: Text("SIGN UP")),
