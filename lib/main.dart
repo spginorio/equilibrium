@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:time_it/screens/home_screen.dart';
 import 'package:time_it/screens/splash_screen.dart';
 import 'package:time_it/services/signup_service.dart';
 import 'package:time_it/services/signin_service.dart';
+import 'package:time_it/services/sign_google_apple.dart';
 
 void main() async {
   // initialize widget
@@ -20,11 +22,14 @@ void main() async {
   //run app
   runApp(MainApp());
 
-//singleton instance of the SignUpController
+  //singleton instance of the SignUpController
   Get.put(SignUpController());
 
-//singleton instance SingInControler
+  //singleton instance SingInControler
   Get.put(SignInController());
+
+  //singleton instance SignGoogleAppleController
+  Get.put(SignGoogleAppleController());
 }
 
 class MainApp extends StatelessWidget {
@@ -36,9 +41,12 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      home: supabase.auth.currentUser != null
-          ? const HomeScreen() // User is logged in
-          : const SplashPage(), // User needs to log in
-    );
+        theme: ThemeData(
+            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.teal),
+            textTheme: GoogleFonts.robotoMonoTextTheme()),
+        home: supabase.auth.currentUser != null
+            ? const HomeScreen() // User is logged in
+            : const SplashPage() // User needs to log in
+        );
   }
 }

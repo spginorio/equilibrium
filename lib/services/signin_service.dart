@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -47,5 +46,12 @@ class SignInController extends GetxController {
       //TODO clear the controller
       //TODO dispose the controllers
     }
+  }
+
+  @override
+  void dispose() {
+    emailSignInController.value.dispose();
+    passwordSignInController.value.dispose();
+    super.dispose();
   }
 }
