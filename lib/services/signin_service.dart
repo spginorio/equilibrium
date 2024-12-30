@@ -42,9 +42,6 @@ class SignInController extends GetxController {
 
       // Log the error for debugging purposes
       log("Error signing up: $e");
-
-      //TODO clear the controller
-      //TODO dispose the controllers
     }
   }
 

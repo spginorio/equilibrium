@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:time_it/screens/home_screen.dart';
-import 'package:time_it/screens/splash_screen.dart';
+import 'package:time_it/screens/login/splash_screen.dart';
 import 'package:time_it/services/signup_service.dart';
 import 'package:time_it/services/signin_service.dart';
 import 'package:time_it/services/sign_google_apple.dart';
