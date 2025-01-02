@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:time_it/screens/login/sign_in_sheet.dart';
 import 'package:time_it/screens/login/sign_up_sheet.dart';
 import 'package:time_it/services/sign_google_apple.dart';
@@ -20,6 +23,11 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    // This will make the icons dark (suitable for light background)
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ));
     return Scaffold(
       body: ListView(
         children: [
@@ -28,13 +36,25 @@ class _SplashPageState extends State<SplashPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
-              //! LOGO,
               SizedBox(
-                height: 50,
+                height: 40,
+              ),
+              //! LOGO
+              FittedBox(
+                fit: BoxFit.contain,
+                child:
+                    Lottie.asset("assets/clock.json", height: 250, width: 250),
+              ),
+              SizedBox(
+                height: 35,
               ),
               Text(
-                "APPLICATION",
-                style: TextStyle(fontSize: 44),
+                "Equilibrium",
+                style: TextStyle(
+                  fontSize: 35,
+                  color: Colors.teal,
+                  fontFamily: GoogleFonts.quicksand().fontFamily,
+                ),
               ),
 
               SizedBox(
@@ -42,11 +62,14 @@ class _SplashPageState extends State<SplashPage> {
               ),
               //! TEXT
               Text(
-                "Welcome Back",
-                style: TextStyle(fontSize: 40),
+                "Welcome Back!",
+                style: TextStyle(
+                    fontSize: 40,
+                    color: Colors.teal,
+                    fontWeight: FontWeight.w500),
               ),
               SizedBox(
-                height: 90,
+                height: 60,
               ),
 
               //! SIGNIN
@@ -63,11 +86,16 @@ class _SplashPageState extends State<SplashPage> {
               SizedBox(
                 height: 20,
               ),
-              ElevatedButton(
-                  onPressed: () async {
-                    await signGoogleAppleController.googleSignIn();
-                  },
-                  child: Text("Sign in with Google"))
+              GestureDetector(
+                onTap: () async {
+                  await signGoogleAppleController.googleSignIn();
+                },
+                child: Image.asset(
+                  "assets/google.png",
+                  height: 50,
+                  width: 200,
+                ),
+              ),
             ],
           ),
         ],

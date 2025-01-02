@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:time_it/screens/home_screen.dart';
-import 'package:time_it/screens/login/splash_screen.dart';
+import 'package:time_it/screens/login/login_screen.dart';
 
 class SignGoogleAppleController extends GetxController {
   final supabaseGoogleAuth = Supabase.instance.client;

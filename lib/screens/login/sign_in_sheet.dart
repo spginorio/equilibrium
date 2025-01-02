@@ -10,8 +10,9 @@ final signInController = Get.find<SignInController>();
 TextButton signInGetxBottomModalSheet(BuildContext context) {
   return TextButton(
     style: TextButton.styleFrom(
+        backgroundColor: Colors.grey.shade200,
         shape: RoundedRectangleBorder(
-            side: BorderSide(),
+            // side: BorderSide(),
             borderRadius: BorderRadius.all(Radius.circular(50)))),
     onPressed: () => Get.bottomSheet(
         Padding(
@@ -19,14 +20,21 @@ TextButton signInGetxBottomModalSheet(BuildContext context) {
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: SingleChildScrollView(
             child: Container(
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 255, 255, 255),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+              ),
               height: 300,
-              color: Colors.amber,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   //!EMAIL
                   GetX<SignInController>(
                     builder: (controller) => TextField(
+                      //TODO format the textfield
                       controller: controller.emailSignInController.value,
                     ),
                   ),
@@ -34,6 +42,7 @@ TextButton signInGetxBottomModalSheet(BuildContext context) {
                   //!PASSWORD,
                   GetX<SignInController>(
                     builder: (controller) => TextField(
+                      //TODO format the textfield
                       controller: controller.passwordSignInController.value,
                     ),
                   ),
@@ -51,10 +60,11 @@ TextButton signInGetxBottomModalSheet(BuildContext context) {
         ),
         isScrollControlled: true),
     child: Padding(
-      padding: const EdgeInsets.fromLTRB(70, 1, 70, 1),
+      padding: const EdgeInsets.fromLTRB(100, 1, 100, 1),
       child: Text(
         "SIGN IN",
-        style: TextStyle(fontSize: 29),
+        style: TextStyle(
+            fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 2),
       ),
     ),
   );

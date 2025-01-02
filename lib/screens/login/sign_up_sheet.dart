@@ -11,8 +11,9 @@ final signUnController = Get.find<SignUpController>();
 TextButton signUpModalBottomSheet(BuildContext context) {
   return TextButton(
     style: TextButton.styleFrom(
+        backgroundColor: Colors.grey.shade200,
         shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.black),
+            //side: BorderSide(color: Colors.black),
             borderRadius: BorderRadius.all(Radius.circular(50)))),
     onPressed: () {
       showModalBottomSheet<void>(
@@ -83,6 +84,8 @@ TextButton signUpModalBottomSheet(BuildContext context) {
 
                       //
                       //!PASSWORD
+
+                      //TODO enter password confirmation
                       /*
                         password input field. 
                         passed to the SignUpController.
@@ -143,10 +146,14 @@ TextButton signUpModalBottomSheet(BuildContext context) {
       );
     },
     child: Padding(
-      padding: const EdgeInsets.fromLTRB(70, 1, 70, 1),
+      padding: const EdgeInsets.fromLTRB(100, 1, 100, 1),
       child: Text(
         "SIGN UP",
-        style: TextStyle(fontSize: 29),
+        style: TextStyle(
+            color: Colors.deepOrangeAccent,
+            fontSize: 20,
+            letterSpacing: 2,
+            fontWeight: FontWeight.bold),
       ),
     ),
   );

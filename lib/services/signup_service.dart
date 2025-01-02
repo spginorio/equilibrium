@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:time_it/screens/home_screen.dart';
-import 'package:time_it/screens/login/splash_screen.dart';
+import 'package:time_it/screens/login/login_screen.dart';
 
 class SignUpController extends GetxController {
   //
