@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -46,26 +48,26 @@ class _SplashPageState extends State<SplashPage> {
                     Lottie.asset("assets/clock.json", height: 250, width: 250),
               ),
               SizedBox(
-                height: 35,
+                height: 20,
               ),
               Text(
                 "Equilibrium",
                 style: TextStyle(
-                  fontSize: 35,
+                  fontSize: 59,
                   color: Colors.teal,
-                  fontFamily: GoogleFonts.quicksand().fontFamily,
+                  fontFamily: GoogleFonts.sansita().fontFamily,
                 ),
               ),
 
               SizedBox(
-                height: 150,
+                height: 110,
               ),
               //! TEXT
               Text(
-                "Welcome Back!",
+                "Welcome Back",
                 style: TextStyle(
-                    fontSize: 40,
-                    color: Colors.teal,
+                    fontSize: 32,
+                    color: const Color.fromARGB(186, 0, 150, 135),
                     fontWeight: FontWeight.w500),
               ),
               SizedBox(
@@ -88,7 +90,11 @@ class _SplashPageState extends State<SplashPage> {
               ),
               GestureDetector(
                 onTap: () async {
-                  await signGoogleAppleController.googleSignIn();
+                  try {
+                    await signGoogleAppleController.googleSignIn();
+                  } catch (e) {
+                    log(e.toString());
+                  }
                 },
                 child: Image.asset(
                   "assets/google.png",

@@ -47,7 +47,12 @@ class SignGoogleAppleController extends GetxController {
       serverClientId: webClientId,
     );
     final googleUser = await googleSignIn.signIn();
-    final googleAuth = await googleUser!.authentication;
+    if (googleUser == null) {
+      // User canceled the sign-in
+      log('Google sign-in was canceled.');
+      return Future.error('Google sign-in canceled.');
+    }
+    final googleAuth = await googleUser.authentication;
     final accessToken = googleAuth.accessToken;
     final idToken = googleAuth.idToken;
 

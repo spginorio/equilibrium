@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:time_it/screens/home_screen.dart';
 import 'package:time_it/screens/login/login_screen.dart';
+import 'package:time_it/services/signin_service.dart';
 
 class SignUpController extends GetxController {
   //
@@ -14,27 +15,43 @@ class SignUpController extends GetxController {
   // Making text controllers observable
   final emailController = TextEditingController().obs;
   final passwordController = TextEditingController().obs;
+  final passwordConfirmationController = TextEditingController().obs;
 
   //! SUPABASE INSTANCE
   final supabase = Supabase.instance.client;
 
+  //! Instance of the SignInController(used on the clearTextFields(); to clear pwrd)
+  SignInController signInControllerPwrd = Get.find<SignInController>();
+
   //!SIGN UP USER FUNCTION TO BE CALLED WHEN USER CLICKS THE SIGN UP BUTTON
   Future<void> signUpUser() async {
     try {
-      final AuthResponse res = await supabase.auth.signUp(
-        email: emailController.value.text,
-        password: passwordController.value.text,
-      );
-      session.value = res.session;
-      user.value = res.user;
+      if (passwordController.value.text !=
+          passwordConfirmationController.value.text) {
+        Get.snackbar(
+          "Password Error",
+          "The password don't match",
+          snackPosition: SnackPosition.BOTTOM,
+          isDismissible: true,
+        );
+      } else if (passwordController.value.text.length ==
+          passwordConfirmationController.value.text.length) {
+        final AuthResponse res = await supabase.auth.signUp(
+          email: emailController.value.text,
+          password: passwordController.value.text,
+        );
 
-      //! Navigate to home screen if user is successfully signed up
-      if (user.value != null) {
-        Get.offAll(() => HomeScreen()); // Navigate and remove previous routes
+        session.value = res.session;
+        user.value = res.user;
+
+        //! Navigate to home screen if user is successfully signed up
+        if (user.value != null) {
+          Get.offAll(() => HomeScreen()); // Navigate and remove previous routes
+        }
+        //
+        //! catch any exceptions that occur during the sign up process
+        //! show a snackbar only the with the error message
       }
-      //
-      //! catch any exceptions that occur during the sign up process
-      //! show a snackbar only the with the error message
     } on AuthException catch (e) {
       Get.snackbar(
         "Sign Up Error",
@@ -52,6 +69,8 @@ class SignUpController extends GetxController {
   void clearTextFields() {
     emailController.value.clear();
     passwordController.value.clear();
+    passwordConfirmationController.value.clear();
+    signInControllerPwrd.passwordSignInController.value.clear();
   }
 
   //!  -------------SIGNOUT-------------
