@@ -21,18 +21,22 @@ void main() async {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhrd3R1bXZqeHVzbWV2Y2t6YnhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQzMzI2NzksImV4cCI6MjA0OTkwODY3OX0.p9inriMRkr0L9KrKxhuYQTqXg4uFf2lY4u6yCo52rxk",
   );
 
-  // Initialize Hive
+  // Init Hive
   await Hive.initFlutter();
   await HiveService.init();
 
-  //singleton instance of the SignUpController
-  Get.put(SignUpController());
+  // instance of the SignUpController
+  // Get.put(SignUpController());
+  Get.lazyPut(() => SignUpController());
 
-  //singleton instance SingInControler
-  Get.put(SignInController());
+  // instance SingInControler
+  // Get.put(SignInController());
+  Get.lazyPut(() => SignInController());
 
-  //singleton instance SignGoogleAppleController
-  Get.put(SignGoogleAppleController());
+  // instance SignGoogleAppleController
+  // Get.put(SignGoogleAppleController());
+  Get.lazyPut(() => SignGoogleAppleController());
+  //TODO check if lazyPut works
 
   //run app
   runApp(MainApp());

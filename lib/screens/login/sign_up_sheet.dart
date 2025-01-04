@@ -136,7 +136,7 @@ TextButton signUpModalBottomSheet(BuildContext context) {
                                 true, // obscure the password input field.
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.only(left: 20),
-                              hintText: "ConfirmPassword..",
+                              hintText: "Confirm Password..",
                               hintStyle: TextStyle(
                                   color:
                                       const Color.fromARGB(255, 168, 168, 168)),

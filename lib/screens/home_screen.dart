@@ -26,6 +26,7 @@ class HomeScreenState extends State<HomeScreen> {
   String _currentTrackingType = '';
   List<TimeEntry> _exerciseEntries = [];
   List<TimeEntry> _leisureEntries = [];
+  bool _mounted = true;
 
   //! retreive the signup controller
   final controller = Get.find<SignUpController>();
@@ -39,8 +40,10 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  @override
   void dispose() {
-    _timer?.cancel();
+    _mounted = false; // Set mounted flag to false
+    _timer?.cancel(); // Cancel timer
     super.dispose();
   }
 
@@ -48,7 +51,7 @@ class HomeScreenState extends State<HomeScreen> {
     final savedTotalSeconds = await HiveService.loadTotalSeconds();
     // final earnedSeconds = await HiveService.getTotalEarnedSeconds();
     // final spentSeconds = await HiveService.getTotalSpentSeconds();
-
+    if (!mounted) return;
     setState(() {
       _totalEarnedSeconds = savedTotalSeconds; // Use the saved total seconds
     });
@@ -58,6 +61,7 @@ class HomeScreenState extends State<HomeScreen> {
     final exerciseEntries =
         await HiveService.getRecentEntriesByType('exercise');
     final leisureEntries = await HiveService.getRecentEntriesByType('leisure');
+    if (!mounted) return;
 
     setState(() {
       _exerciseEntries = exerciseEntries;
@@ -88,6 +92,7 @@ class HomeScreenState extends State<HomeScreen> {
 // START TIMER FUNCTION
   void _startTimer(String type) {
     _timer?.cancel();
+    if (!_mounted) return; // Check mounted state before setState
 
     setState(() {
       _startTime = DateTime.now();
@@ -97,6 +102,11 @@ class HomeScreenState extends State<HomeScreen> {
     });
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!_mounted) {
+        // Check mounted state in timer callback
+        timer.cancel();
+        return;
+      }
       setState(() {
         _currentDuration = DateTime.now().difference(_startTime!);
 
@@ -111,6 +121,8 @@ class HomeScreenState extends State<HomeScreen> {
         HiveService.saveTotalSeconds(_totalEarnedSeconds);
       });
     });
+
+    if (!_mounted) return; // Check mounted state before showing SnackBar
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -138,6 +150,7 @@ class HomeScreenState extends State<HomeScreen> {
 // STOP TIMER FUNCTION
   Future<void> _stopTimer() async {
     if (_startTime == null) {
+      if (!_mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Center(child: Text('Please start tracking first')),
@@ -165,6 +178,8 @@ class HomeScreenState extends State<HomeScreen> {
     // Save the total seconds before resetting
     await HiveService.saveTotalSeconds(_totalEarnedSeconds);
 
+    if (!_mounted) return; // Check mounted state before setState
+
     setState(() {
       _startTime = null;
       _isTracking = false;
@@ -173,6 +188,8 @@ class HomeScreenState extends State<HomeScreen> {
     });
 
     await _loadRecentEntries();
+
+    if (!_mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

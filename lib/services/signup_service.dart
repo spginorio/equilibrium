@@ -2,9 +2,16 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:time_it/hive/hive_service.dart';
 import 'package:time_it/screens/home_screen.dart';
 import 'package:time_it/screens/login/login_screen.dart';
 import 'package:time_it/services/signin_service.dart';
+
+//! Instance of the SignInController
+//used on the clearTextFields(); to clear psswrd
+//after user logs out
+SignInController signInControllerPwrd = Get.find<
+    SignInController>(); //declare it outside of the class SignUpController
 
 class SignUpController extends GetxController {
   //
@@ -19,9 +26,6 @@ class SignUpController extends GetxController {
 
   //! SUPABASE INSTANCE
   final supabase = Supabase.instance.client;
-
-  //! Instance of the SignInController(used on the clearTextFields(); to clear pwrd)
-  SignInController signInControllerPwrd = Get.find<SignInController>();
 
   //!SIGN UP USER FUNCTION TO BE CALLED WHEN USER CLICKS THE SIGN UP BUTTON
   Future<void> signUpUser() async {
@@ -49,10 +53,11 @@ class SignUpController extends GetxController {
           Get.offAll(() => HomeScreen()); // Navigate and remove previous routes
         }
         //
-        //! catch any exceptions that occur during the sign up process
-        //! show a snackbar only the with the error message
+        //
       }
     } on AuthException catch (e) {
+      //! catch any exceptions that occur during the sign up process
+      //! show a snackbar only the with the error message
       Get.snackbar(
         "Sign Up Error",
         e.message,
@@ -70,11 +75,14 @@ class SignUpController extends GetxController {
     emailController.value.clear();
     passwordController.value.clear();
     passwordConfirmationController.value.clear();
-    signInControllerPwrd.passwordSignInController.value.clear();
+    signInControllerPwrd.passwordSignInController.value.clear(); //TODO error???
   }
 
   //!  -------------SIGNOUT-------------
   Future<void> signOut() async {
+    // Close user-specific Hive boxes before signing out
+    await HiveService.closeUserBoxes();
+
     //sign out from Supabase and clear the session and user observables
     await supabase.auth.signOut();
 

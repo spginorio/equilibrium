@@ -44,8 +44,11 @@ class _SplashPageState extends State<SplashPage> {
               //! LOGO
               FittedBox(
                 fit: BoxFit.contain,
-                child:
-                    Lottie.asset("assets/clock.json", height: 250, width: 250),
+                child: Lottie.asset(
+                  "assets/clock.json",
+                  height: 250,
+                  width: 250,
+                ),
               ),
               SizedBox(
                 height: 20,
