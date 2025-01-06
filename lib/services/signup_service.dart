@@ -2,106 +2,110 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:time_it/hive/hive_service.dart';
-import 'package:time_it/screens/home_screen.dart';
-import 'package:time_it/screens/login/login_screen.dart';
-import 'package:time_it/services/signin_service.dart';
-
-//! Instance of the SignInController
-//used on the clearTextFields(); to clear psswrd
-//after user logs out
-SignInController signInControllerPwrd = Get.find<
-    SignInController>(); //declare it outside of the class SignUpController
+import 'package:equilibrium/hive/hive_service.dart';
+import 'package:equilibrium/screens/home_screen.dart';
+import 'package:equilibrium/screens/login/login_screen.dart';
 
 class SignUpController extends GetxController {
-  //
-  //! Making session and user observable
-  Rxn<Session> session = Rxn<Session>();
-  Rxn<User> user = Rxn<User>();
-
-  // Making text controllers observable
-  final emailController = TextEditingController().obs;
-  final passwordController = TextEditingController().obs;
-  final passwordConfirmationController = TextEditingController().obs;
-
-  //! SUPABASE INSTANCE
   final supabase = Supabase.instance.client;
 
-  //!SIGN UP USER FUNCTION TO BE CALLED WHEN USER CLICKS THE SIGN UP BUTTON
+  // Observable states
+  final Rxn<Session> session = Rxn<Session>();
+  final Rxn<User> user = Rxn<User>();
+  final isLoading = false.obs;
+
+  // Form fields as observable strings
+  final _email = ''.obs;
+  final _password = ''.obs;
+  final _passwordConfirmation = ''.obs;
+
+  // Setters for form fields
+  void setEmail(String value) => _email.value = value.trim();
+  void setPassword(String value) => _password.value = value;
+  void setPasswordConfirmation(String value) =>
+      _passwordConfirmation.value = value;
+
   Future<void> signUpUser() async {
+    if (!_validateInputs()) return;
+
     try {
-      if (passwordController.value.text !=
-          passwordConfirmationController.value.text) {
-        Get.snackbar(
-          "Password Error",
-          "The password don't match",
-          snackPosition: SnackPosition.BOTTOM,
-          isDismissible: true,
-        );
-      } else if (passwordController.value.text.length ==
-          passwordConfirmationController.value.text.length) {
-        final AuthResponse res = await supabase.auth.signUp(
-          email: emailController.value.text,
-          password: passwordController.value.text,
-        );
+      isLoading.value = true;
 
-        session.value = res.session;
-        user.value = res.user;
+      final AuthResponse res = await supabase.auth.signUp(
+        email: _email.value,
+        password: _password.value,
+      );
 
-        //! Navigate to home screen if user is successfully signed up
-        if (user.value != null) {
-          Get.offAll(() => HomeScreen()); // Navigate and remove previous routes
-        }
-        //
-        //
+      session.value = res.session;
+      user.value = res.user;
+
+      if (user.value != null) {
+        Get.offAll(() => const HomeScreen());
       }
     } on AuthException catch (e) {
-      //! catch any exceptions that occur during the sign up process
-      //! show a snackbar only the with the error message
       Get.snackbar(
         "Sign Up Error",
         e.message,
         snackPosition: SnackPosition.BOTTOM,
-        isDismissible: true,
+        backgroundColor: Colors.red[100],
       );
-
-      // Log the error for debugging purposes
       log("Error signing up: $e");
+    } catch (e) {
+      log("Unexpected error during sign up: $e");
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  //! clear the controllers
-  void clearTextFields() {
-    emailController.value.clear();
-    passwordController.value.clear();
-    passwordConfirmationController.value.clear();
-    signInControllerPwrd.passwordSignInController.value.clear(); //TODO error???
+  bool _validateInputs() {
+    if (_email.value.isEmpty ||
+        _password.value.isEmpty ||
+        _passwordConfirmation.value.isEmpty) {
+      Get.snackbar(
+        "Validation Error",
+        "Please fill in all fields",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return false;
+    }
+
+    if (_password.value != _passwordConfirmation.value) {
+      Get.snackbar(
+        "Password Error",
+        "The passwords don't match",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return false;
+    }
+
+    if (_password.value.length < 6) {
+      Get.snackbar(
+        "Password Error",
+        "Password must be at least 6 characters long",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return false;
+    }
+
+    return true;
   }
 
-  //!  -------------SIGNOUT-------------
+  void clearForm() {
+    _email.value = '';
+    _password.value = '';
+    _passwordConfirmation.value = '';
+  }
+
   Future<void> signOut() async {
-    // Close user-specific Hive boxes before signing out
-    await HiveService.closeUserBoxes();
-
-    //sign out from Supabase and clear the session and user observables
-    await supabase.auth.signOut();
-
-    //makes user null
-    user.value = null;
-
-    //clear the controllers of email and password
-    clearTextFields();
-
-    //navigate back to the splash screen if user is signed out
-    if (user.value == null) {
-      Get.offAll(() => SplashPage());
+    try {
+      await HiveService.closeUserBoxes();
+      await supabase.auth.signOut();
+      user.value = null;
+      clearForm();
+      Get.offAll(() => const SplashPage());
+    } catch (e) {
+      log("Error during sign out: $e");
+      rethrow;
     }
-  }
-
-  @override
-  void dispose() {
-    emailController.value.dispose();
-    passwordController.value.dispose();
-    super.dispose();
   }
 }

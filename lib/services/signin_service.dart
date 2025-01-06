@@ -1,54 +1,59 @@
 import 'dart:developer';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:time_it/screens/home_screen.dart';
+import 'package:equilibrium/screens/home_screen.dart';
 
 class SignInController extends GetxController {
-  //
-  //! SUPABASE INSTANCE
   final supabase = Supabase.instance.client;
 
-  //! Making session and user observable
+  final _email = ''.obs;
+  final _password = ''.obs;
+
+  // CHANGE 2: Added loading state for better UX
+  final isLoading = false.obs;
+
+  // Kept existing session and user observables
   Rxn<Session> session = Rxn<Session>();
   Rxn<User> user = Rxn<User>();
 
-  //! Making text controllers observable
-  final emailSignInController = TextEditingController().obs;
-  final passwordSignInController = TextEditingController().obs;
+  void setEmail(String value) => _email.value = value.trim();
+  void setPassword(String value) => _password.value = value;
 
   Future<void> signInUser() async {
-    try {
-      final AuthResponse res = await supabase.auth.signInWithPassword(
-        email: emailSignInController.value.text,
-        password: passwordSignInController.value.text,
+    // CHANGE 4: Added validation before attempting sign in
+    if (_email.value.isEmpty || _password.value.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Please fill in all fields",
+        snackPosition: SnackPosition.BOTTOM,
       );
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      final AuthResponse res = await supabase.auth.signInWithPassword(
+        email: _email.value,
+        password: _password.value,
+      );
+
       session.value = res.session;
       user.value = res.user;
 
-      //! Navigate to home screen if user is successfully signed up
       if (user.value != null) {
-        Get.offAll(() => HomeScreen()); // Navigate and remove previous routes
+        Get.offAll(() => HomeScreen());
       }
-      //
-      //
     } on AuthException catch (e) {
       Get.snackbar(
-        "Sign Up Error",
+        "Sign In Error",
         e.message,
         snackPosition: SnackPosition.BOTTOM,
         isDismissible: true,
       );
-
-      // Log the error for debugging purposes
-      log("Error signing up: $e");
+      log("Error signing in: $e");
+    } finally {
+      isLoading.value = false;
     }
-  }
-
-  @override
-  void dispose() {
-    emailSignInController.value.dispose();
-    passwordSignInController.value.dispose();
-    super.dispose();
   }
 }

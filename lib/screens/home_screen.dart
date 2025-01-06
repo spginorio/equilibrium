@@ -1,14 +1,18 @@
 import 'dart:async';
 import 'package:get/get.dart';
-import 'package:time_it/services/sign_google_apple.dart';
-import 'package:time_it/services/signup_service.dart';
+import 'package:equilibrium/services/sign_google_apple.dart';
+import 'package:equilibrium/services/signup_service.dart';
+import 'package:equilibrium/theme/styles.dart';
 import 'package:vibration/vibration.dart';
-import 'package:time_it/theme/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../hive/hive_service.dart';
 import '../models/time_entry.dart';
 import '../screens/widgets/time_entry_button.dart';
+
+// retrieve the signup controller
+final controller = Get.find<SignUpController>();
+final googleAppleController = Get.find<SignGoogleAppleController>();
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,10 +31,6 @@ class HomeScreenState extends State<HomeScreen> {
   List<TimeEntry> _exerciseEntries = [];
   List<TimeEntry> _leisureEntries = [];
   bool _mounted = true;
-
-  //! retreive the signup controller
-  final controller = Get.find<SignUpController>();
-  final googleAppleController = Get.find<SignGoogleAppleController>();
 
   @override
   void initState() {

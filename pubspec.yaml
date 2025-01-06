@@ -1,4 +1,4 @@
-name: time_it
+name: equilibrium
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0
@@ -20,6 +20,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   vibration: ^2.0.1
   lottie: ^3.3.0
+  flutter_dotenv: ^5.2.1
   
 
 dev_dependencies:
@@ -33,3 +34,4 @@ flutter:
   assets: 
     - assets/clock.json
     - assets/google.png
+    - assets/.env

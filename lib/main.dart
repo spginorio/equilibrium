@@ -1,45 +1,44 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:time_it/hive/hive_service.dart';
-import 'package:time_it/screens/home_screen.dart';
-import 'package:time_it/screens/login/login_screen.dart';
-import 'package:time_it/services/signup_service.dart';
-import 'package:time_it/services/signin_service.dart';
-import 'package:time_it/services/sign_google_apple.dart';
+import 'package:equilibrium/hive/hive_service.dart';
+import 'package:equilibrium/screens/home_screen.dart';
+import 'package:equilibrium/screens/login/login_screen.dart';
+import 'package:equilibrium/services/signup_service.dart';
+import 'package:equilibrium/services/signin_service.dart';
+import 'package:equilibrium/services/sign_google_apple.dart';
 
 void main() async {
-  // initialize widget
   WidgetsFlutterBinding.ensureInitialized();
 
-  //supabase init
-  await Supabase.initialize(
-    url: 'https://hkwtumvjxusmevckzbxm.supabase.co',
-    anonKey:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhrd3R1bXZqeHVzbWV2Y2t6YnhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQzMzI2NzksImV4cCI6MjA0OTkwODY3OX0.p9inriMRkr0L9KrKxhuYQTqXg4uFf2lY4u6yCo52rxk",
-  );
+  try {
+    //dotenv
+    await dotenv.load(fileName: "assets/.env");
 
-  // Init Hive
-  await Hive.initFlutter();
-  await HiveService.init();
+    //supabase init
+    await Supabase.initialize(
+      url: dotenv.env['SUPABASE_URL']!,
+      anonKey: dotenv.env['SUPABASE_KEY']!,
+    );
 
-  // instance of the SignUpController
-  // Get.put(SignUpController());
-  Get.lazyPut(() => SignUpController());
+    //hive
+    await Hive.initFlutter();
+    await HiveService.init();
 
-  // instance SingInControler
-  // Get.put(SignInController());
-  Get.lazyPut(() => SignInController());
+    // Initialize controllers
+    Get.put(SignUpController(), permanent: true);
+    Get.put(SignInController(), permanent: true);
+    Get.put(SignGoogleAppleController(), permanent: true);
 
-  // instance SignGoogleAppleController
-  // Get.put(SignGoogleAppleController());
-  Get.lazyPut(() => SignGoogleAppleController());
-  //TODO check if lazyPut works
-
-  //run app
-  runApp(MainApp());
+    runApp(MainApp());
+  } catch (e) {
+    log('Error during initialization: $e');
+    // Handle initialization error appropriately
+  }
 }
 
 class MainApp extends StatelessWidget {

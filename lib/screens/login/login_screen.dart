@@ -5,10 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:time_it/screens/login/sign_in_sheet.dart';
-import 'package:time_it/screens/login/sign_up_sheet.dart';
-import 'package:time_it/services/sign_google_apple.dart';
-import 'package:time_it/services/signin_service.dart';
+import 'package:equilibrium/screens/login/sign_in_sheet.dart';
+import 'package:equilibrium/screens/login/sign_up_sheet.dart';
+import 'package:equilibrium/services/sign_google_apple.dart';
+import 'package:equilibrium/services/signin_service.dart';
+
+// retrieve the signup controller
+final signInController = Get.find<SignInController>();
+final signGoogleAppleController = Get.find<SignGoogleAppleController>();
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -19,9 +23,6 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   //
-  //! retreive the signup controller
-  final signInController = Get.find<SignInController>();
-  final signGoogleAppleController = Get.find<SignGoogleAppleController>();
 
   @override
   Widget build(BuildContext context) {
