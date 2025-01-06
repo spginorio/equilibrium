@@ -20,6 +20,9 @@ void main() async {
     await dotenv.load(fileName: "assets/.env");
 
     //supabase init
+    //add supabase url and key to an .env and place it inside assets:
+    //SUPABASE_URL = "your supabase url here"
+    //SUPABASE_KEY = "your supabase key here"
     await Supabase.initialize(
       url: dotenv.env['SUPABASE_URL']!,
       anonKey: dotenv.env['SUPABASE_KEY']!,
